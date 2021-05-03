@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>LocalConnection Receiver</title>
+		<meta charset="UTF-8" />
+		<script src="LocalConnection.js"></script>
+		<script>
+
+			var t = new LocalConnection({
+				name: 'testcallback',
+				debug: true
+			});
+
+			this.pollsquare = function() {
+				var Lsquare = window.screenLeft;
+				var T2square = window.screenTop+(window.innerHeight/2);
+				t.send('square', Lsquare, T2square);
+				setTimeout(this.pollsquare, 1);
+			}
+			setTimeout(this.pollsquare, 1);
+			
+			// start listening
+			t.listen();
+
+			// this example uses an anonymous function
+
+			t.addCallback('log', function(Rposition,Tposition) 
+			{
+				var Lposition = window.screenLeft;
+				var T2position = window.screenTop;
+				var garo = Math.abs([Rposition-Lposition-15]);
+				var sero = Math.abs([Tposition-T2position]);
+					if (garo < 30 && sero<30)
+					{document.getElementById('log').innerHTML = garo+'and'+sero+'<br />';}
+					else
+					{document.getElementById('log').innerHTML = 'no'+'<br />';}
+
+			});
+
+
+			t.addCallback('square', function(Rsquare,Tsquare) 
+			{
+				var Lsquare = window.screenLeft;
+				var T2square = window.screenTop+(window.innerHeight/2);
+				var garo = Math.abs([Rsquare-Lsquare-15]);
+				var sero = Math.abs([Tsquare-T2square]);
+					if (garo < 30 && sero<30){
+						document.getElementById('square').style.display = "none";
+						document.getElementById('bounce').style.display = "block";
+					}
+					
+					else{
+						document.getElementById('square').style.display = "block";
+						document.getElementById('bounce').style.display = "none";
+					}
+			});
+	
+		</script>
+		<style>
+
+			#log {
+				border: 1px solid #333333;
+				padding: 10px;
+				background: #f1f1f1;
+				color: red;
+			}
+
+			#square {
+				background-color: red;
+				position: absolute; 
+				top: 50%; 
+				height: 26px; 
+				width: 26px;
+				margin-top: -13px;
+				left : 0%;
+				margin-left: -13px;
+				display: block;
+				border-radius: 50px;
+			}
+			#bounce {
+				position: absolute; 
+				top: 50%; 
+				height: 100px; 
+				width: 100px;
+				margin-top: -50px;
+				left : 0%;
+				display : none;
+			}
+			
+
+
+		</style>
+	</head>
+	<body>
+		<!----<pre id="log"></pre> -->
+		<div id="square"></div>
+		<img id="bounce" src="bounce1.gif">
+		<div style="text-align: left;"><p> 원을 만들어주세요</p></div>
+	</body>
+</html>

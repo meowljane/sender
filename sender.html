@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>LocalConnection Sender</title>
+		<meta charset="UTF-8" />
+		<script src="LocalConnection.js"></script>
+		<script>
+
+			var t = new LocalConnection({
+				name: 'testcallback',
+				debug: true
+			});
+
+			// simple poll
+
+			this.pollposition = function() {
+				var Rposition = window.screenLeft+window.outerWidth;
+				var Tposition = window.screenTop;
+				t.send('log', Rposition, Tposition);
+				setTimeout(this.pollposition, 1);
+			}
+			setTimeout(this.pollposition, 1);
+
+			this.pollsquare = function() {
+				var Rsquare = window.screenLeft+window.outerWidth;
+				var Tsquare = window.screenTop+(window.innerHeight/2);
+				t.send('square', Rsquare, Tsquare);
+				setTimeout(this.pollsquare, 1);
+			}
+			setTimeout(this.pollsquare, 1);
+
+			t.listen();
+
+			t.addCallback('square', function(Lsquare,T2square) 
+			{
+				var Rsquare = window.screenLeft+window.outerWidth;
+				var Tsquare = window.screenTop+(window.innerHeight/2);
+				var garo = Math.abs([Rsquare-Lsquare-15]);
+				var sero = Math.abs([Tsquare-T2square]);
+					if (garo < 30 && sero<30){
+						document.getElementById('square').style.display = "none";
+						document.getElementById('bounce').style.display = "block";
+					}
+					
+					else{
+						document.getElementById('square').style.display = "block";
+						document.getElementById('bounce').style.display = "none";
+					}
+			});
+
+		</script>
+	</head>
+
+	<style>
+		#square {	
+			position: absolute; 
+			top: 50%; 
+			height: 26px; 
+			width: 26px;
+			margin-top: -13px;
+			right : 0%;
+			margin-right: -13px;
+			background-color: red;
+			display: block;
+			border-radius: 50px;
+			}
+
+		#bounce {
+			position: absolute; 
+			top: 50%; 
+			height: 100px; 
+			width: 100px;
+			margin-top: -50px;
+			right : 0%;
+			display: none;
+			}
+
+			
+	</style>
+	<body>
+		<div id="square"></div>
+		<img id="bounce" src="bounce2.gif">
+		<div style="text-align: right;"><p> 두 반원을 합쳐</p></div>
+	</body>
+
+</html>
